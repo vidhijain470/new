@@ -1,0 +1,66 @@
+/**********************************************************
+
+	Following is the Binary Tree Node class structure
+
+	template <typename T>
+	class BinaryTreeNode {
+    	public: 
+    	T data;
+    	BinaryTreeNode<T> *left;
+    	BinaryTreeNode<T> *right;
+
+    	BinaryTreeNode(T data) {
+        	this->data = data;
+        	left = NULL;
+        	right = NULL;
+    	}
+	};
+	
+***********************************************************/
+#include<climits>
+#include<cmath>
+class subtree{
+    public:
+    int mini;
+    int maxi;
+    bool isBST;
+    int height;
+};
+
+subtree helper(BinaryTreeNode<int>*root){
+    
+    if(root==NULL){
+        subtree output;
+        output.mini =INT_MAX;
+        output.maxi =INT_MIN;
+        output.isBST = true;
+        output.height = 0;
+        return output;
+    }
+    subtree leftoutput = helper(root->left);
+    subtree rightoutput = helper(root->right);
+    int mini = min(root->data , min(leftoutput.mini , rightoutput.mini));
+    int maxi = max(root->data , max(leftoutput.maxi , rightoutput.maxi));
+   bool isfinalbst= (root->data > leftoutput.maxi) && (root->data <= rightoutput.mini) &&
+		leftoutput.isBST && rightoutput.isBST;
+    int finalheight;
+    if(isfinalbst==true){
+        finalheight = max(leftoutput.height , rightoutput.height) +1;
+    }
+    else{
+         finalheight = max(leftoutput.height , rightoutput.height) ;
+    }
+    
+    subtree output;
+    output.mini=mini;
+    output.maxi=maxi;
+    output.isBST = isfinalbst;
+    output.height = finalheight;
+    return output;
+}
+int largestBSTSubtree(BinaryTreeNode<int> *root) {
+    // Write your code here
+    subtree ans= helper(root);
+    return ans.height;
+    
+}
